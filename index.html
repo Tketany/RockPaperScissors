@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RockPaperScissors</title>
+</head>
+<body>
+    
+</body>
+<script>
+    let human_score=0 , computer_score=0;
+    const HUMANSELECTION=getHumanChoice();
+    const COMPUTERSELECTION=getComputerChoice();
+
+    function getRandomInt(max){
+        return Math.floor(Math.random() * max);
+    }
+    function getComputerChoice(){
+        const choices = ["rock", "paper", "scissors"];
+        const computer_choice = choices[getRandomInt(3)];
+        console.log(`Computer chose: ${computer_choice}`); // Log computer's choice for debugging
+        return computer_choice;
+    }
+
+    function getHumanChoice(){
+        let isCorrect = false; 
+        let human_choice; 
+
+        while (!isCorrect) {
+            human_choice = prompt("Enter your choice (Rock, Paper, Scissors):");
+            if (human_choice) {
+                human_choice = human_choice.toLowerCase();
+                if (["rock", "paper", "scissors"].includes(human_choice)) {
+                    isCorrect = true; // Valid choice
+                } else {
+                    alert("Invalid choice. Please choose Rock, Paper, or Scissors.");
+                }
+            } else {
+                alert("Input cannot be empty!");
+            }
+        }
+        console.log(`Human chose: ${human_choice}`);
+        return human_choice; 
+    }
+    function playOneRound(humanChoice, computerChoice){
+        if (humanChoice === computerChoice) {
+            alert("It's a tie!");
+        } else if (
+            (humanChoice === "rock" && computerChoice === "scissors") ||
+            (humanChoice === "scissors" && computerChoice === "paper") ||
+            (humanChoice === "paper" && computerChoice === "rock")
+        ) {
+            alert(`${humanChoice.charAt(0).toUpperCase() + humanChoice.slice(1)} beats ${computerChoice}. Human +1 point!`);
+            human_score++;
+        } else {
+            alert(`${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)} beats ${humanChoice}. Computer +1 point!`);
+            computer_score++;
+        }
+
+        console.log(`Scores -> Human: ${human_score}, Computer: ${computer_score}`);
+        
+    }
+    //console.log(getHumanChoice());
+
+    function startGame(rounds = 5) {
+        for (let i = 0; i < rounds; i++) {
+            const humanSelection = getHumanChoice();
+            const computerSelection = getComputerChoice();
+            playOneRound(humanSelection, computerSelection);
+        }
+
+    // Display final scores
+        if (human_score > computer_score) {
+            alert(`You win the game! Final Score: Human ${human_score} - Computer ${computer_score}`);
+        } else if (human_score < computer_score) {
+            alert(`Computer wins the game! Final Score: Human ${human_score} - Computer ${computer_score}`);
+        } else {
+            alert(`It's a draw! Final Score: Human ${human_score} - Computer ${computer_score}`);
+        }
+    }
+    startGame();
+
+   
+</script>
+</html>
