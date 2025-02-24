@@ -3,84 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RockPaperScissors</title>
+    <title>Rock Paper Scissors</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+        }
+
+        h1 {
+            margin-top: 20px;
+            font-size: 36px;
+            text-shadow: 2px 2px 8px rgba(255, 255, 255, 0.2);
+        }
+
+        #game-container {
+            margin-top: 20px;
+        }
+
+        .choices {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .choice {
+            font-size: 50px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .choice:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 8px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        #results {
+            margin-top: 30px;
+            font-size: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .winner {
+            font-size: 28px;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+    </style>
 </head>
 <body>
+    <h1>Rock Paper Scissors</h1>
     
-</body>
-<script>
-    let human_score=0 , computer_score=0;
-    const HUMANSELECTION=getHumanChoice();
-    const COMPUTERSELECTION=getComputerChoice();
+    <div id="game-container">
+        <div class="choices">
+            <div id="rock" class="choice">✊</div>
+            <div id="paper" class="choice">✋</div>
+            <div id="scissors" class="choice">✌️</div>
+        </div>
+    </div>
 
-    function getRandomInt(max){
-        return Math.floor(Math.random() * max);
-    }
-    function getComputerChoice(){
-        const choices = ["rock", "paper", "scissors"];
-        const computer_choice = choices[getRandomInt(3)];
-        console.log(`Computer chose: ${computer_choice}`); // Log computer's choice for debugging
-        return computer_choice;
-    }
+    <div id="results">First to 5 points wins!</div>
 
-    function getHumanChoice(){
-        let isCorrect = false; 
-        let human_choice; 
+    <script>
+        let humanScore = 0;
+        let computerScore = 0;
 
-        while (!isCorrect) {
-            human_choice = prompt("Enter your choice (Rock, Paper, Scissors):");
-            if (human_choice) {
-                human_choice = human_choice.toLowerCase();
-                if (["rock", "paper", "scissors"].includes(human_choice)) {
-                    isCorrect = true; // Valid choice
-                } else {
-                    alert("Invalid choice. Please choose Rock, Paper, or Scissors.");
-                }
+        function getComputerChoice() {
+            const choices = ["rock", "paper", "scissors"];
+            return choices[Math.floor(Math.random() * choices.length)];
+        }
+
+        function playOneRound(humanChoice) {
+            const computerChoice = getComputerChoice();
+            let resultMessage = `You chose ${humanChoice}. Computer chose ${computerChoice}. `;
+
+            if (humanChoice === computerChoice) {
+                resultMessage += "It's a tie!";
+            } else if (
+                (humanChoice === "rock" && computerChoice === "scissors") ||
+                (humanChoice === "scissors" && computerChoice === "paper") ||
+                (humanChoice === "paper" && computerChoice === "rock")
+            ) {
+                humanScore++;
+                resultMessage += `You win this round!`;
             } else {
-                alert("Input cannot be empty!");
+                computerScore++;
+                resultMessage += `Computer wins this round!`;
+            }
+
+            updateResults(resultMessage);
+            checkWinner();
+        }
+
+        function updateResults(message) {
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = `${message}<br>Score: You ${humanScore} - ${computerScore} Computer`;
+        }
+
+        function checkWinner() {
+            if (humanScore === 5 || computerScore === 5) {
+                const finalMessage = humanScore === 5 ? "🎉 You win the game! 🎉" : "💀 Computer wins the game! 💀";
+                document.getElementById("results").innerHTML = `<span class="winner">${finalMessage}</span><br>Final Score: You ${humanScore} - ${computerScore} Computer`;
+                disableChoices();
             }
         }
-        console.log(`Human chose: ${human_choice}`);
-        return human_choice; 
-    }
-    function playOneRound(humanChoice, computerChoice){
-        if (humanChoice === computerChoice) {
-            alert("It's a tie!");
-        } else if (
-            (humanChoice === "rock" && computerChoice === "scissors") ||
-            (humanChoice === "scissors" && computerChoice === "paper") ||
-            (humanChoice === "paper" && computerChoice === "rock")
-        ) {
-            alert(`${humanChoice.charAt(0).toUpperCase() + humanChoice.slice(1)} beats ${computerChoice}. Human +1 point!`);
-            human_score++;
-        } else {
-            alert(`${computerChoice.charAt(0).toUpperCase() + computerChoice.slice(1)} beats ${humanChoice}. Computer +1 point!`);
-            computer_score++;
+
+        function disableChoices() {
+            document.querySelectorAll(".choice").forEach(choice => {
+                choice.style.pointerEvents = "none";
+                choice.style.opacity = "0.5";
+            });
         }
 
-        console.log(`Scores -> Human: ${human_score}, Computer: ${computer_score}`);
-        
-    }
-    //console.log(getHumanChoice());
-
-    function startGame(rounds = 5) {
-        for (let i = 0; i < rounds; i++) {
-            const humanSelection = getHumanChoice();
-            const computerSelection = getComputerChoice();
-            playOneRound(humanSelection, computerSelection);
-        }
-
-    // Display final scores
-        if (human_score > computer_score) {
-            alert(`You win the game! Final Score: Human ${human_score} - Computer ${computer_score}`);
-        } else if (human_score < computer_score) {
-            alert(`Computer wins the game! Final Score: Human ${human_score} - Computer ${computer_score}`);
-        } else {
-            alert(`It's a draw! Final Score: Human ${human_score} - Computer ${computer_score}`);
-        }
-    }
-    startGame();
-
-   
-</script>
+        document.getElementById("rock").addEventListener("click", () => playOneRound("rock"));
+        document.getElementById("paper").addEventListener("click", () => playOneRound("paper"));
+        document.getElementById("scissors").addEventListener("click", () => playOneRound("scissors"));
+    </script>
+</body>
 </html>
